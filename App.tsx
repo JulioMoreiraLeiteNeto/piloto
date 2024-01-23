@@ -1,33 +1,33 @@
 import { Alert, Button, Pressable, SafeAreaView, StyleSheet, Text, TouchableHighlight, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native';
 import { PizzaItem } from './components/PizzaItem';
 import { RowItem } from './components/RowItem';
+import { useState } from 'react';
 
 export default function App() {
+
+  const [ingredientes, setIngredientes] = useState(
+    [
+      "Queijo X",
+      "Queijo Y",
+      "Queijo Z"
+    ]);
+
 
   const handleButton = () =>{
     Alert.alert("Oiiii");
   }
 
+  const handleNewingredient = () => {
+    setIngredientes((prev) => [...prev, "Novo Ingrediente"]);
+  }
   return (
     <SafeAreaView style={styles.container}>
-      <RowItem title='Oiiii' itens={["Queijo X","Queijo Y","Queijo Z"]}>{}</RowItem>
-      {/* <Button title="Press me" onPress={handleButton} /> */}
-
-      {/* <Pressable onPress={handleButton}>
-        <Text style={styles.texto}>Press me</Text>
-      </Pressable> */}
-      <TouchableHighlight onPress={handleButton} underlayColor="black">
-        <Text style={styles.texto}>Botão com highlight</Text>
-      </TouchableHighlight>
-      <TouchableHighlight onPress={handleButton} underlayColor="none">
-        <Text style={styles.texto}>Botão sem highlight</Text>
-      </TouchableHighlight>
-      <TouchableOpacity onPress={handleButton}>
-        <Text style={styles.texto}>Botão com Opacity</Text>
-      </TouchableOpacity>
-      <TouchableWithoutFeedback onPress={handleButton}>
-        <Text style={styles.texto}>Botão Sem Resposta</Text>
-      </TouchableWithoutFeedback>
+     {
+        ingredientes.map((ingrediente) => {
+          return <Text style={styles.texto}>{ingrediente}</Text>
+        })
+     }
+    <Button title='Adicionar Novo Item'onPress={handleNewingredient}></Button>
     </SafeAreaView>
   );
 }
