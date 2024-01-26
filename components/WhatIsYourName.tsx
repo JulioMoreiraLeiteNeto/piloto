@@ -7,36 +7,34 @@ import {
     Text,
     TextInput
 } from "react-native";
+
+  type Props = {
+    setNameInput: (newName: string) => void;
+  }
   
-  export default function BoasVindas() {
-    const [nameInput, setNameInput] = useState("");
+  export const WhatIsYourName = ({ setNameInput }: Props) => {
     const [nameInput2, setNameInput2] = useState("");
-  
-    const handleSaveName = () => {
-      setNameInput2(nameInput);
-      Alert.alert("Nome salvo com sucesso!");
-    };
+
+    const handleClick = () => {
+      if (nameInput2 === "") {
+        Alert.alert("Ops", "Você não digitou seu nome");
+        return;
+      }
+      setNameInput(nameInput2);
+    }
+
     return (
       <SafeAreaView style={styles.container}>
-        {nameInput2 === "" ? (
           <>
             <Text style={styles.texto}>Como podemos chamar Você?</Text>
             <TextInput
               placeholder="Digite seu nome"
               style={styles.input}
-              value={nameInput}
-              onChangeText={(text) => setNameInput(text)}
+              value={nameInput2}
+              onChangeText={setNameInput2}
             />
-            <Button title="Salvar" onPress={handleSaveName}></Button>
+            <Button title="Salvar" onPress={handleClick}></Button>
           </>
-        ) : (
-          <>
-            <Text style={styles.texto}>
-              Olá {nameInput}, seja muito bem vindo!
-            </Text>
-            <Button title="Voltar" onPress={() => setNameInput2('')}></Button>
-          </>
-        )}
       </SafeAreaView>
     );
   }
@@ -70,4 +68,6 @@ import {
       backgroundColor: "green",
     },
   });
+
+  export default WhatIsYourName;
   
