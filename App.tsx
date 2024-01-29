@@ -1,23 +1,65 @@
-import { useState } from "react";
-import { SafeAreaView, StyleSheet } from "react-native";
-import HereIsYourName from "./components/HereIsYourName";
-import WhatIsYourName from "./components/WhatIsYourName";
+import React, { useEffect, useState } from "react";
+import {
+  ActivityIndicator,
+  FlatList,
+  Image,
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  View
+} from "react-native";
+
+interface Movie {
+  titulo: string;
+  avatar: string;
+}
 
 export default function App() {
-  const [nameInput, setNameInput] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [movies, setMovies] = useState<Movie[]>([]);
 
-  const handleClearName = () => {
-    setNameInput("");
-  };
+  useEffect(() => {
+    const loadMovies = async () => {
+      setLoading(true);
+      const req = await fetch("https://api.b7web.com.br/cinema/");
+      const json = await req.json();
+
+      if (json) {
+        setMovies(json);
+      }
+      setLoading(false);
+    };
+    loadMovies();
+  }, []);
 
   return (
     <SafeAreaView style={styles.container}>
-      {nameInput == "" && <WhatIsYourName setNameInput={setNameInput}/>}
-      {nameInput !== "" && (
-        <HereIsYourName
-          nameInput={nameInput}
-          handleClearName={handleClearName}
-        />
+      {loading && (
+        <>
+          <ActivityIndicator size="large" color={"#000"} />
+          <Text>Carregando...</Text>
+        </>
+      )}
+      {!loading && (
+        <>
+          <FlatList
+            style={styles.list}
+            data={movies}
+            renderItem={({ item }) => (
+              <View>
+                <Text style={styles.titleFilme}>{item.titulo}</Text>
+                <Image
+                  source={{ uri: item.avatar }}
+                  style={styles.avatarFilme}
+                />
+              </View>
+            )}
+            keyExtractor={(item) => item.titulo}
+          />
+          <Text style={styles.totalFilmes}>
+            Total de Filmes: {movies.length}
+          </Text>
+        </>
       )}
     </SafeAreaView>
   );
@@ -26,29 +68,32 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#ccc",
-    alignContent: "center",
+    backgroundColor: "#fff",
+    alignItems: "center",
     justifyContent: "center",
-    color: "#000",
   },
-  texto: {
-    color: "#000",
-    fontSize: 20,
-    textAlign: "center",
-    margin: 10,
+  list: {
+    marginTop: 80,
+    marginBottom: 20,
   },
-  input: {
-    color: "#000",
+  titleFilme: {
     fontSize: 20,
+    fontWeight: "bold",
+    flex: 1,
     textAlign: "center",
-    margin: 10,
-    backgroundColor: "#EEE",
   },
-  btn: {
-    color: "#000",
+  avatarFilme: {
+    width: 300,
+    height: 600,
+    flex: 1,
+    resizeMode: "contain",
+    alignSelf: "center",
+    marginTop: -70,
+  },
+  totalFilmes: {
     fontSize: 20,
-    textAlign: "center",
-    margin: 10,
-    backgroundColor: "green",
+    fontWeight: "bold",
+    marginTop: 10,
+    marginBottom: 10,
   },
 });
